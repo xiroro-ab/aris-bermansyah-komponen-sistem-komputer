@@ -168,8 +168,7 @@
             feather.replace();
 
             // --- Google Apps Script URL ---
-            // GANTI DENGAN URL ANDA YANG DIDAPAT DARI LANGKAH 3
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzLxuUXJANgNcXySPW5uVh4EhVtqfh8wTFPPnMsGa20NbbgSjJbikGsuhYEC8DmkQaGg/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxxzvVfrgXK9XxbtkpT9yqxclqXOXyEUqe_4E-gMtnWWn-gFPKH5cxbdvW_q4cqZf1bA/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -330,45 +329,66 @@
                 savingStatusEl.textContent = 'Menyimpan skor...';
                 
                 try {
+                    // Menggunakan fetch untuk POST masih bisa jalan karena header sudah di-handle di script
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
+                        mode: 'no-cors', // Mode no-cors untuk POST sederhana
                         body: JSON.stringify({ ...userData, skor: score }),
                         headers: { 'Content-Type': 'application/json' }
                     });
-                    const result = await response.json();
-                    savingStatusEl.textContent = result.success ? 'Skor berhasil disimpan!' : 'Gagal menyimpan skor.';
+                    savingStatusEl.textContent = 'Skor berhasil dikirim!';
                 } catch (error) {
-                    savingStatusEl.textContent = 'Terjadi kesalahan saat menyimpan skor.';
+                    savingStatusEl.textContent = 'Terjadi kesalahan saat mengirim skor.';
                 }
             }
 
-            async function loadLeaderboard() {
+            // FUNGSI BARU MENGGUNAKAN JSONP
+            function loadLeaderboard() {
                 leaderboardBody.innerHTML = '';
                 leaderboardLoading.textContent = 'Memuat data peringkat...';
                 leaderboardLoading.style.display = 'block';
+
+                const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
                 
-                try {
-                    const response = await fetch(SCRIPT_URL);
-                    const result = await response.json();
-                    if (result.success) {
-                        leaderboardLoading.style.display = 'none';
-                        result.data.forEach((row, index) => {
-                            const tr = document.createElement('tr');
-                            tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
-                            tr.innerHTML = `
-                                <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
-                                <td class="px-6 py-4">${row.nama}</td>
-                                <td class="px-6 py-4">${row.kelas}</td>
-                                <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
-                            `;
-                            leaderboardBody.appendChild(tr);
-                        });
-                    } else {
-                        leaderboardLoading.textContent = 'Gagal memuat data.';
+                window[callbackName] = function(result) {
+                    try {
+                        if (result.success) {
+                            leaderboardLoading.style.display = 'none';
+                            if (result.data.length === 0) {
+                                leaderboardLoading.textContent = 'Belum ada data peringkat.';
+                                leaderboardLoading.style.display = 'block';
+                                return;
+                            }
+                            result.data.forEach((row, index) => {
+                                const tr = document.createElement('tr');
+                                tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                                tr.innerHTML = `
+                                    <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                                    <td class="px-6 py-4">${row.nama}</td>
+                                    <td class="px-6 py-4">${row.kelas}</td>
+                                    <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                                `;
+                                leaderboardBody.appendChild(tr);
+                            });
+                        } else {
+                            leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
+                        }
+                    } catch (e) {
+                        leaderboardLoading.textContent = 'Terjadi kesalahan saat memproses data.';
+                    } finally {
+                        // Clean up
+                        document.body.removeChild(script);
+                        delete window[callbackName];
                     }
-                } catch (error) {
-                    leaderboardLoading.textContent = 'Terjadi kesalahan saat memuat data.';
-                }
+                };
+
+                const script = document.createElement('script');
+                script.src = `${SCRIPT_URL}?callback=${callbackName}`;
+                script.onerror = () => {
+                    leaderboardLoading.textContent = 'Gagal menghubungi server. Periksa kembali URL Apps Script dan status deployment.';
+                    delete window[callbackName];
+                };
+                document.body.appendChild(script);
             }
         });
     </script>
