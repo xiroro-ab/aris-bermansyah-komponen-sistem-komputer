@@ -288,7 +288,7 @@
 
             // --- Google Apps Script URL ---
             // GANTI DENGAN URL APPS SCRIPT BARU ANDA
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyM73rfp3ismsW3pxYFuopJGjxow1Qsq7yU2csIysabpMJdpnyBiOrDAIXO-ir3BgoHiw/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWkihI2UXMhcmgIcQdIGIx0V3gFoOerSCbSyQ5grOq30wFGM6PoJYGoxj0A6__sEIo1A/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -467,33 +467,60 @@
                 leaderboardLoading.style.display = 'block';
 
                 try {
-                    const response = await fetch(SCRIPT_URL);
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok: ${response.statusText}`);
-                    }
-                    const result = await response.json();
+                    // Metode fetch dengan redirect
+                    const response = await fetch(SCRIPT_URL, { redirect: 'manual' });
                     
-                    if (result.success) {
-                        leaderboardLoading.style.display = 'none';
-                        if (result.data.length === 0) {
-                            leaderboardLoading.textContent = 'Belum ada data peringkat.';
-                            leaderboardLoading.style.display = 'block';
-                            return;
+                    // Ambil URL redirect dari header 'Location'
+                    // Ini adalah triknya: fetch tidak akan mengikuti redirect, tapi kita bisa membacanya
+                    // Namun, karena kebijakan keamanan, browser modern mungkin tidak mengekspos header ini.
+                    // Jika gagal, kita coba cara fallback.
+                    
+                    // Karena browser modern memblokir pembacaan header redirect, kita gunakan iframe tersembunyi
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = SCRIPT_URL;
+                    
+                    iframe.onload = function() {
+                        try {
+                            const dataUri = iframe.contentWindow.location.href;
+                            const jsonString = decodeURIComponent(dataUri.split(',')[1]);
+                            const result = JSON.parse(jsonString);
+
+                            if (result.success) {
+                                leaderboardLoading.style.display = 'none';
+                                if (result.data.length === 0) {
+                                    leaderboardLoading.textContent = 'Belum ada data peringkat.';
+                                    leaderboardLoading.style.display = 'block';
+                                    return;
+                                }
+                                result.data.forEach((row, index) => {
+                                    const tr = document.createElement('tr');
+                                    tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                                    tr.innerHTML = `
+                                        <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                                        <td class="px-6 py-4">${row.nama}</td>
+                                        <td class="px-6 py-4">${row.kelas}</td>
+                                        <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                                    `;
+                                    leaderboardBody.appendChild(tr);
+                                });
+                            } else {
+                                leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
+                            }
+                        } catch (e) {
+                            leaderboardLoading.textContent = 'Gagal memproses data dari server.';
+                        } finally {
+                            document.body.removeChild(iframe);
                         }
-                        result.data.forEach((row, index) => {
-                            const tr = document.createElement('tr');
-                            tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
-                            tr.innerHTML = `
-                                <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
-                                <td class="px-6 py-4">${row.nama}</td>
-                                <td class="px-6 py-4">${row.kelas}</td>
-                                <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
-                            `;
-                            leaderboardBody.appendChild(tr);
-                        });
-                    } else {
-                        leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
-                    }
+                    };
+
+                    iframe.onerror = function() {
+                        leaderboardLoading.textContent = 'Gagal menghubungi server.';
+                        document.body.removeChild(iframe);
+                    };
+
+                    document.body.appendChild(iframe);
+
                 } catch (error) {
                     console.error('Error fetching leaderboard:', error);
                     leaderboardLoading.textContent = 'Gagal menghubungi server. Periksa kembali URL Apps Script dan status deployment.';
