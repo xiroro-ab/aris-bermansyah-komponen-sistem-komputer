@@ -288,7 +288,7 @@
 
             // --- Google Apps Script URL ---
             // GANTI DENGAN URL APPS SCRIPT BARU ANDA
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYv7J5pSgE1Fy5haLtzlL2CS2qXpJcvOIySyL5x1eVTldnLgeZYouJMqgDTKilgOw7_w/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYShdDX-CL0SVp7YODiyX6EztDhfGuoTMxiK4oO1dLBAIrdTrrb13TcaaMnUVcxj0-/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -449,13 +449,20 @@
                 savingStatusEl.textContent = 'Menyimpan skor...';
                 
                 try {
-                    await fetch(SCRIPT_URL, {
+                    // Menggunakan fetch untuk POST dengan Content-Type text/plain untuk menghindari preflight
+                    const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'no-cors', 
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                        },
                         body: JSON.stringify({ ...userData, skor: score }),
-                        headers: { 'Content-Type': 'application/json' }
                     });
-                    savingStatusEl.textContent = 'Skor berhasil dikirim!';
+                    const result = await response.json();
+                    if (result.status === 'sukses') {
+                        savingStatusEl.textContent = 'Skor berhasil disimpan!';
+                    } else {
+                        savingStatusEl.textContent = `Gagal menyimpan skor: ${result.error}`;
+                    }
                 } catch (error) {
                     savingStatusEl.textContent = 'Terjadi kesalahan saat mengirim skor.';
                 }
@@ -467,67 +474,39 @@
                 leaderboardLoading.style.display = 'block';
 
                 try {
-                    // Metode fetch dengan redirect
-                    const response = await fetch(SCRIPT_URL, { redirect: 'manual' });
+                    const response = await fetch(SCRIPT_URL);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const result = await response.json();
                     
-                    // Ambil URL redirect dari header 'Location'
-                    // Ini adalah triknya: fetch tidak akan mengikuti redirect, tapi kita bisa membacanya
-                    // Namun, karena kebijakan keamanan, browser modern mungkin tidak mengekspos header ini.
-                    // Jika gagal, kita coba cara fallback.
-                    
-                    // Karena browser modern memblokir pembacaan header redirect, kita gunakan iframe tersembunyi
-                    const iframe = document.createElement('iframe');
-                    iframe.style.display = 'none';
-                    iframe.src = SCRIPT_URL;
-                    
-                    iframe.onload = function() {
-                        try {
-                            const dataUri = iframe.contentWindow.location.href;
-                            const jsonString = decodeURIComponent(dataUri.split(',')[1]);
-                            const result = JSON.parse(jsonString);
-
-                            if (result.success) {
-                                leaderboardLoading.style.display = 'none';
-                                if (result.data.length === 0) {
-                                    leaderboardLoading.textContent = 'Belum ada data peringkat.';
-                                    leaderboardLoading.style.display = 'block';
-                                    return;
-                                }
-                                result.data.forEach((row, index) => {
-                                    const tr = document.createElement('tr');
-                                    tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
-                                    tr.innerHTML = `
-                                        <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
-                                        <td class="px-6 py-4">${row.nama}</td>
-                                        <td class="px-6 py-4">${row.kelas}</td>
-                                        <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
-                                    `;
-                                    leaderboardBody.appendChild(tr);
-                                });
-                            } else {
-                                leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
-                            }
-                        } catch (e) {
-                            leaderboardLoading.textContent = 'Gagal memproses data dari server.';
-                        } finally {
-                            document.body.removeChild(iframe);
+                    if (result.success) {
+                        leaderboardLoading.style.display = 'none';
+                        if (result.data.length === 0) {
+                            leaderboardLoading.textContent = 'Belum ada data peringkat.';
+                            leaderboardLoading.style.display = 'block';
+                            return;
                         }
-                    };
-
-                    iframe.onerror = function() {
-                        leaderboardLoading.textContent = 'Gagal menghubungi server.';
-                        document.body.removeChild(iframe);
-                    };
-
-                    document.body.appendChild(iframe);
-
+                        result.data.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+                            tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                            tr.innerHTML = `
+                                <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                                <td class="px-6 py-4">${row.nama}</td>
+                                <td class="px-6 py-4">${row.kelas}</td>
+                                <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                            `;
+                            leaderboardBody.appendChild(tr);
+                        });
+                    } else {
+                        leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
+                    }
                 } catch (error) {
                     console.error('Error fetching leaderboard:', error);
-                    leaderboardLoading.textContent = 'Gagal menghubungi server. Periksa kembali URL Apps Script dan status deployment.';
+                    leaderboardLoading.textContent = 'Gagal menghubungi server. Pastikan URL Apps Script benar dan sudah di-deploy ulang sebagai versi baru.';
                 }
             }
         });
     </script>
 </body>
 </html>
-" has been selected.
