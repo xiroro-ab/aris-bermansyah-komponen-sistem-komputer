@@ -288,7 +288,7 @@
 
             // --- Google Apps Script URL ---
             // GANTI DENGAN URL APPS SCRIPT BARU ANDA
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYShdDX-CL0SVp7YODiyX6EztDhfGuoTMxiK4oO1dLBAIrdTrrb13TcaaMnUVcxj0-/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHclcubMCRzzCuOcUrwww0I7lj_FNYoWRY9tBdA54qBB-FkC6XmTfGsLnpEzPrhttybQ/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -449,13 +449,12 @@
                 savingStatusEl.textContent = 'Menyimpan skor...';
                 
                 try {
-                    // Menggunakan fetch untuk POST dengan Content-Type text/plain untuk menghindari preflight
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8',
-                        },
                         body: JSON.stringify({ ...userData, skor: score }),
+                        headers: {
+                            'Content-Type': 'text/plain', // Menggunakan text/plain untuk menghindari preflight
+                        },
                     });
                     const result = await response.json();
                     if (result.status === 'sukses') {
