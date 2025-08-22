@@ -17,360 +17,358 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
-        /* Custom styles for a polished look */
         body {
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* Custom scrollbar for a modern feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 */
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569; /* slate-600 */
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; /* slate-500 */
-        }
-
-        /* Styling for embedded content to be responsive */
-        .content-embed {
-            position: relative;
-            width: 100%;
             overflow: hidden;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
         }
-        .content-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        
-        /* Active state for navigation links */
-        .nav-link.active {
-            background-color: #38bdf8; /* sky-400 */
-            color: #ffffff;
-            font-weight: 600;
-        }
-        
-        /* Hide content panels by default */
-        .content-panel {
-            display: none;
-        }
-        
-        /* Show the active panel */
-        .content-panel.active {
-            display: block;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .content-embed { position: relative; width: 100%; overflow: hidden; padding-top: 56.25%; }
+        .content-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .nav-link.active { background-color: #38bdf8; color: #ffffff; font-weight: 600; }
+        .content-panel { display: none; }
+        .content-panel.active { display: block; }
+        .btn-answer.correct { background-color: #22c55e; color: white; border-color: #16a34a; }
+        .btn-answer.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .btn-answer:disabled { cursor: not-allowed; opacity: 0.7; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-300">
 
-    <div class="flex flex-col md:flex-row min-h-screen">
+    <div class="flex h-screen">
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-full md:w-80 bg-slate-800/50 backdrop-blur-sm p-6 border-r border-slate-700/60 flex-shrink-0 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 fixed md:relative z-20 h-full">
-            <div class="flex items-center justify-between mb-8">
-                <h1 class="text-xl font-bold text-white">Portal Belajar Informatika</h1>
-                <button id="close-sidebar-btn" class="md:hidden text-slate-400 hover:text-white">
-                    <i data-feather="x"></i>
-                </button>
+        <aside id="sidebar" class="w-full md:w-80 bg-slate-800/50 backdrop-blur-sm p-6 border-r border-slate-700/60 flex flex-col flex-shrink-0 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 fixed md:relative z-20 h-full overflow-y-auto">
+            <div>
+                <div class="flex items-center justify-between mb-8">
+                    <h1 class="text-xl font-bold text-white">Portal Belajar Informatika</h1>
+                    <button id="close-sidebar-btn" class="md:hidden text-slate-400 hover:text-white"><i data-feather="x"></i></button>
+                </div>
+                <nav>
+                    <a href="#" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-200 hover:bg-slate-700" data-target="home"><i data-feather="home" class="w-5 h-5"></i><span>Beranda</span></a>
+                    <hr class="border-slate-700 my-4">
+                    <h2 class="text-sm font-semibold text-sky-400 uppercase tracking-wider mb-3">Modul Pembelajaran</h2>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-1"><i data-feather="play-circle" class="w-5 h-5"></i><span>Ilustrasi Cara Kerja</span></a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-2"><i data-feather="layers" class="w-5 h-5"></i><span>Sistem Komputer</span></a></li>
+                        <li>
+                            <a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-3"><i data-feather="hard-drive" class="w-5 h-5"></i><span>Hardware</span></a>
+                            <ul class="pl-4 mt-1 space-y-1">
+                                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-400" data-target="sub-1-3-1"><i data-feather="mouse-pointer" class="w-4 h-4"></i><span>Input Devices</span></a></li>
+                                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-400" data-target="sub-1-3-2"><i data-feather="cpu" class="w-4 h-4"></i><span>Process Devices</span></a></li>
+                                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-400" data-target="sub-1-3-3"><i data-feather="printer" class="w-4 h-4"></i><span>Output Devices</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-4"><i data-feather="code" class="w-5 h-5"></i><span>Software</span></a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-5"><i data-feather="user" class="w-5 h-5"></i><span>Brainware</span></a></li>
+                    </ul>
+                    <hr class="border-slate-700 my-4">
+                    <h2 class="text-sm font-semibold text-sky-400 uppercase tracking-wider mb-3">Evaluasi</h2>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="kuis"><i data-feather="help-circle" class="w-5 h-5"></i><span>Kuis</span></a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="peringkat"><i data-feather="bar-chart-2" class="w-5 h-5"></i><span>Peringkat</span></a></li>
+                    </ul>
+                    <hr class="border-slate-700 my-4">
+                    <h2 class="text-sm font-semibold text-sky-400 uppercase tracking-wider mb-3">Aktivitas Interaktif</h2>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="game"><i data-feather="dribbble" class="w-5 h-5"></i><span>Game</span></a></li>
+                    </ul>
+                </nav>
             </div>
-            
-            <nav>
-                <h2 class="text-sm font-semibold text-sky-400 uppercase tracking-wider mb-3">Modul Pembelajaran</h2>
-                <ul class="space-y-1">
-                    <!-- Menu Items -->
-                    <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-1">Ilustrasi Cara Kerja</a></li>
-                    <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-2">Sistem Komputer</a></li>
-                    <li>
-                        <a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-3">Hardware</a>
-                        <!-- Sub-sub Menu for Hardware -->
-                        <ul class="pl-4 mt-1 space-y-1">
-                            <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-3-1">Input Devices</a></li>
-                            <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-3-2">Process Devices</a></li>
-                            <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-3-3">Output Devices</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-4">Software</a></li>
-                    <li><a href="#" class="nav-link block w-full text-left px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-200" data-target="sub-1-5">Brainware</a></li>
-                </ul>
-            </nav>
+            <div class="mt-auto pt-6"><p class="text-xs text-slate-500 text-center">&copy; 2025 Aris Bermansyah, S.Kom</p></div>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 p-6 md:p-10 overflow-y-auto">
-            <!-- Mobile Header -->
             <div class="md:hidden flex items-center justify-between mb-6">
                  <h1 class="text-xl font-bold text-white">Portal Belajar</h1>
-                <button id="open-sidebar-btn" class="text-slate-400 hover:text-white">
-                    <i data-feather="menu"></i>
-                </button>
+                <button id="open-sidebar-btn" class="text-slate-400 hover:text-white"><i data-feather="menu"></i></button>
             </div>
 
-            <!-- Content panels will be dynamically shown here -->
             <div id="content-area">
-                <!-- Home / Default View -->
-                <div id="home" class="content-panel">
-                    <div class="text-center py-20">
-                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Selamat Datang di Portal Pembelajaran Interaktif</h1>
-                        <p class="text-lg text-slate-400 max-w-3xl mx-auto">Mari pelajari materi komponen sistem komputer melalui modul interaktif, kuis, dan permainan yang menyenangkan!</p>
-                         <div class="mt-8">
-                            <a href="#" id="start-learning-btn" class="bg-sky-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-sky-600 transition-all duration-300 shadow-lg shadow-sky-500/20">
-                                Mulai Belajar Sekarang
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <!-- Home Panel -->
+                <div id="home" class="content-panel"><div class="text-center py-20"><h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Selamat Datang di Portal Pembelajaran Interaktif</h1><p class="text-lg text-slate-400 max-w-3xl mx-auto">Mari pelajari materi komponen sistem komputer melalui modul interaktif, kuis, dan permainan yang menyenangkan!</p><div class="mt-8"><a href="#" id="start-learning-btn" class="bg-sky-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-sky-600 transition-all">Mulai Belajar Sekarang</a></div></div></div>
                 
-                <!-- Sub Menu 1.1: Ilustrasi Cara Kerja -->
-                <div id="sub-1-1" class="content-panel">
-                    <h2 class="text-3xl font-bold text-white mb-6">Cara Kerja Komputer</h2>
-                    <div class="content-embed rounded-xl overflow-hidden shadow-2xl shadow-slate-900/80">
-                        <iframe src="https://www.youtube.com/embed/A4A8bLzqJc4?si=fBMID5DDqJcsmCE3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                </div>
+                <!-- Learning Panels -->
+                <div id="sub-1-1" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Ilustrasi Cara Kerja Komputer</h2><div class="content-embed rounded-xl overflow-hidden"><iframe src="https://www.youtube.com/embed/A4A8bLzqJc4" title="YouTube video player" allowfullscreen></iframe></div></div>
+                <div id="sub-1-2" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Sistem Komputer</h2><div class="content-embed rounded-xl overflow-hidden bg-white"><iframe src="https://docs.google.com/document/d/e/2PACX-1vTrePWxGO4zedQZTMFO90E-goHOz9rH30tmh406HI9mubDEtnHUAJPpMOShVxiGwMJQyZnO4UMWz5-D/pub?embedded=true"></iframe></div></div>
+                <div id="sub-1-3" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Hardware</h2><div class="content-embed rounded-xl overflow-hidden"><iframe src="https://www.youtube.com/embed/sk49OdEl6NA" title="YouTube video player" allowfullscreen></iframe></div></div>
+                <div id="sub-1-3-1" class="content-panel space-y-12"><h2 class="text-3xl font-bold text-white mb-6">Hardware: Input Devices</h2><div class="grid md:grid-cols-2 gap-8 items-center"><div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Mouse 3D" src="https://sketchfab.com/models/ed74385debca426f83545edc41ad0eb9/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div><div><h3 class="text-2xl font-bold text-sky-400 mb-3">Mouse</h3><p class="text-slate-400">Mouse adalah perangkat input untuk menggerakan kursor, memungkinkan pengguna memilih, membuka, dan menjalankan program atau file.</p></div></div></div>
+                <div id="sub-1-3-2" class="content-panel space-y-12"><h2 class="text-3xl font-bold text-white mb-6">Hardware: Process Devices</h2><div class="grid md:grid-cols-2 gap-8 items-center"><div class="content-embed rounded-xl h-80 md:h-96"><iframe title="CPU 3D" src="https://sketchfab.com/models/a872fc9e704248969064fe79dbf82917/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div><div><h3 class="text-2xl font-bold text-sky-400 mb-3">CPU</h3><p class="text-slate-400">CPU adalah otak komputer yang bertugas mengeksekusi perintah dari perangkat lunak.</p></div></div></div>
+                <div id="sub-1-3-3" class="content-panel space-y-12"><h2 class="text-3xl font-bold text-white mb-6">Hardware: Output Devices</h2><div class="grid md:grid-cols-2 gap-8 items-center"><div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Monitor 3D" src="https://sketchfab.com/models/f84d24b6df3648d884fd9be9c8007dd4/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div><div><h3 class="text-2xl font-bold text-sky-400 mb-3">Monitor</h3><p class="text-slate-400">Monitor adalah perangkat output yang menampilkan informasi visual dari komputer.</p></div></div></div>
+                <div id="sub-1-4" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Software</h2><div class="content-embed rounded-xl overflow-hidden"><iframe src="https://www.youtube.com/embed/2LZbbEtrqoo" title="YouTube video player" allowfullscreen></iframe></div></div>
+                <div id="sub-1-5" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Brainware</h2><div class="content-embed rounded-xl overflow-hidden"><iframe src="https://www.youtube.com/embed/Kqv5V1vpfHw" title="YouTube video player" allowfullscreen></iframe></div></div>
 
-                <!-- Sub Menu 1.2: Sistem Komputer -->
-                <div id="sub-1-2" class="content-panel">
-                    <h2 class="text-3xl font-bold text-white mb-6">Sistem Komputer</h2>
-                    <div class="content-embed rounded-xl overflow-hidden shadow-2xl shadow-slate-900/80 bg-white">
-                        <iframe src="https://docs.google.com/document/d/e/2PACX-1vTrePWxGO4zedQZTMFO90E-goHOz9rH30tmh406HI9mubDEtnHUAJPpMOShVxiGwMJQyZnO4UMWz5-D/pub?embedded=true"></iframe>
-                    </div>
-                </div>
-                
-                <!-- Sub Menu 1.3: Hardware -->
-                <div id="sub-1-3" class="content-panel">
-                    <h2 class="text-3xl font-bold text-white mb-6">Hardware</h2>
-                    <div class="content-embed rounded-xl overflow-hidden shadow-2xl shadow-slate-900/80">
-                        <iframe src="https://www.youtube.com/embed/sk49OdEl6NA?si=oO5SH9-XoXy5KJV7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <!-- Sub Menu 1.3.1: Hardware Input -->
-                <div id="sub-1-3-1" class="content-panel space-y-12">
-                    <h2 class="text-3xl font-bold text-white mb-6">Hardware: Input Devices</h2>
-                    <!-- Mouse -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Logitech G102 Prodigy Gaming Mouse" src="https://sketchfab.com/models/ed74385debca426f83545edc41ad0eb9/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Mouse</h3>
-                            <p class="text-slate-400 leading-relaxed">Mouse adalah perangkat input yang berfungsi untuk menggerakan kursor kelayar komputer, memungkinkan pengguna memilih, membuka, dan menjalankan program atau file dan fitur klik kiri, klik kanan, double klik, dan scroll, mouse mempermudah navigasi dan interaksi dengan berbagai aplikasi atau object didalam komputer.</p>
+                <!-- Kuis Panel -->
+                <div id="kuis" class="content-panel">
+                    <h2 class="text-3xl font-bold text-white mb-6">Kuis Interaktif</h2>
+                    <div id="quiz-container" class="bg-slate-800 p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+                        <!-- Login Screen -->
+                        <div id="quiz-login">
+                            <h3 class="text-2xl font-bold text-white mb-4">Masuk untuk Memulai Kuis</h3>
+                            <form id="login-form">
+                                <div class="mb-4"><label for="nama" class="block mb-2 text-sm font-medium text-slate-300">Nama Lengkap</label><input type="text" id="nama" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5" required></div>
+                                <div class="mb-4"><label for="kelas" class="block mb-2 text-sm font-medium text-slate-300">Kelas</label><select id="kelas" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"><option>8.1</option><option>8.2</option><option>8.3</option><option>8.4</option></select></div>
+                                <div class="mb-6"><label for="token" class="block mb-2 text-sm font-medium text-slate-300">Token</label><input type="password" id="token" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required></div>
+                                <button type="submit" class="w-full bg-sky-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-sky-600">Mulai Kuis</button>
+                                <p id="login-error" class="text-red-400 text-sm mt-4 text-center hidden"></p>
+                            </form>
                         </div>
-                    </div>
-                    <!-- Keyboard -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="PC Keyboard" src="https://sketchfab.com/models/26f060f2b0f142d8b602afc461dc2c53/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Keyboard</h3>
-                            <p class="text-slate-400 leading-relaxed">Keyboard adalah perangkat input yang berfungsi untuk memasukkan data ke komputer melalui penekanan tombol. fungsinya mencakup mengetik teks, memasukan perintah, dan mengontrol prgrogram. keyboard juga memiliki tombol khusus seperti enter, shift, ctrl, dan alt yang memungkinkan pengguna melakukan operasi tertentu, serta tombol fungsi (F1-F12) untuk akses cepat ke fitur atau perintah dalam aplikasi.</p>
+                        <!-- Question Screen -->
+                        <div id="quiz-question-screen" class="hidden">
+                            <div class="flex justify-between items-center mb-4"><div id="question-counter" class="text-sm text-slate-400"></div><div id="timer" class="text-lg font-bold text-sky-400"></div></div>
+                            <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-white mb-6"></h3>
+                            <div id="answer-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                            <div class="mt-8 flex justify-end"><button id="next-btn" class="bg-slate-600 text-white font-semibold px-6 py-2 rounded-lg hidden">Lanjut</button></div>
                         </div>
-                    </div>
-                    <!-- Joystick -->
-                     <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Joystick Extreme3D" src="https://sketchfab.com/models/e68fb57f08664533aa3de15188f2baa8/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Joystick</h3>
-                            <p class="text-slate-400 leading-relaxed">Joystick adalah perangkat input yang digunakan untuk mengendalikan gerakan permainan video atau aplikasi simulasi. dengan menggerakan tuasnya ke berbagai arah, pengguna dapat mengontrol objek atau karakter di layar. Joystick sering dilengkapi dengan tombol tambahan yang memberikan fungsi-fungsi khusus, seperti menembak, melompat, atau menjalankan aksi tertentu dalam game atau simulasi.</p>
-                        </div>
-                    </div>
-                     <!-- Microphone -->
-                     <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Desktop Microphone" src="https://sketchfab.com/models/090d9988db994aa2b4fe699b0fce7c60/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Microphone</h3>
-                            <p class="text-slate-400 leading-relaxed">Microphone adalah perangkat input yang berfungsi untuk menangkap suara dan mengubahnya menjadi sinyal listrik yang dapat diproses oleh perangkat lain, seperti komputer atau ponsel. mic digunakan untuk berbagai keperluan, termasuk merekam audio, berkomunikasi dalam panggilan atau konferensi video, serta memberikan perintah suara pada aplikasi atau asisten virtual.</p>
+                        <!-- Result Screen -->
+                        <div id="quiz-results" class="hidden text-center">
+                             <h3 class="text-2xl font-bold text-white mb-4">Kuis Selesai!</h3>
+                             <p id="score-text" class="text-xl text-slate-300 mb-2"></p>
+                             <p id="saving-status" class="text-sm text-sky-400 mb-8">Menyimpan skor...</p>
+                             <button id="restart-quiz-btn" class="bg-sky-500 text-white font-semibold px-8 py-3 rounded-lg">Coba Lagi</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sub Menu 1.3.2: Hardware Proses -->
-                <div id="sub-1-3-2" class="content-panel space-y-12">
-                    <h2 class="text-3xl font-bold text-white mb-6">Hardware: Process Devices</h2>
-                    <!-- CPU -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Mengenal CPU" src="https://sketchfab.com/models/a872fc9e704248969064fe79dbf82917/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">CPU (Central Processing Unit)</h3>
-                            <p class="text-slate-400 leading-relaxed">CPU adalah otak dari sebuah perangkat komputer. CPU bertugas untuk mengeksekusi perintah, memahami dan melaksanakan perintah dan data dari perangkat lunak sebuah komputer.</p>
+                <!-- Peringkat Panel -->
+                <div id="peringkat" class="content-panel">
+                    <h2 class="text-3xl font-bold text-white mb-6">Papan Peringkat</h2>
+                    <div class="bg-slate-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-400">
+                                <thead class="text-xs text-slate-300 uppercase bg-slate-700">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Peringkat</th>
+                                        <th scope="col" class="px-6 py-3">Nama</th>
+                                        <th scope="col" class="px-6 py-3">Kelas</th>
+                                        <th scope="col" class="px-6 py-3">Skor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-body">
+                                    <!-- Data akan dimuat di sini -->
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                    <!-- GPU -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="GPU" src="https://sketchfab.com/models/0124232c57f047b98a0afeb7f0ac1a26/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">GPU (Graphics Processing Unit)</h3>
-                            <p class="text-slate-400 leading-relaxed">GPU memiliki tugas utama untuk memproses data grafis atau gambar dengan melakukan penghitungan matematika. GPU secara khusus memiliki peran untuk melakukan pemrosesan instruksi rendering grafis.</p>
-                        </div>
-                    </div>
-                    <!-- RAM -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Random access memory (ram) ddr4" src="https://sketchfab.com/models/6f37195ac2b84b21a901471485351b37/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">RAM (Random Access Memory)</h3>
-                            <p class="text-slate-400 leading-relaxed">RAM berfungsi untuk menyimpan data sementara yang akan dipakai atau diproses langsung oleh CPU. Dengan adanya RAM, CPU bisa terus memproses data, sehingga pengguna bisa menjalankan beberapa aplikasi sekaligus.</p>
-                        </div>
-                    </div>
-                     <!-- Motherboard -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="MotherBoard + Components" src="https://sketchfab.com/models/3bc94057328243d4b341a55f59160f8a/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Motherboard</h3>
-                            <p class="text-slate-400 leading-relaxed">Motherboard adalah papan sirkuit utama yang menghubungkan semua komponen penting komputer seperti CPU, RAM, GPU, dan perangkat penyimpanan, memungkinkan mereka untuk berkomunikasi satu sama lain.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Sub Menu 1.3.3: Hardware Output -->
-                <div id="sub-1-3-3" class="content-panel space-y-12">
-                    <h2 class="text-3xl font-bold text-white mb-6">Hardware: Output Devices</h2>
-                    <!-- Monitor -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Ultrawide Monitor" src="https://sketchfab.com/models/f84d24b6df3648d884fd9be9c8007dd4/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Monitor</h3>
-                            <p class="text-slate-400 leading-relaxed">Monitor adalah perangkat output yang menampilkan informasi visual dari komputer dalam bentuk teks, gambar, atau video, memungkinkan pengguna melihat hasil dari proses komputasi.</p>
-                        </div>
-                    </div>
-                    <!-- Speaker -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Stage Speaker - black" src="https://sketchfab.com/models/f3209a6a45b844df92560099f982a508/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Speaker</h3>
-                            <p class="text-slate-400 leading-relaxed">Speaker adalah perangkat output yang berfungsi untuk mengubah sinyal audio dari komputer menjadi suara yang dapat didengar, digunakan untuk mendengarkan musik, suara dalam video, game, atau panggilan.</p>
-                        </div>
-                    </div>
-                    <!-- Printer -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Epson 4750 Printer" src="https://sketchfab.com/models/6757a9bb399140fdb7e1061e124aacb0/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Printer</h3>
-                            <p class="text-slate-400 leading-relaxed">Printer adalah perangkat output yang berfungsi untuk mencetak dokumen, gambar, atau teks dari komputer ke media fisik seperti kertas, menghasilkan salinan fisik dari file digital.</p>
-                        </div>
-                    </div>
-                    <!-- Proyektor -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div class="content-embed rounded-xl h-80 md:h-96"><iframe title="Video Proyektor" src="https://sketchfab.com/models/2fc7bd0739ca4a039b1925c2331fd462/embed?autostart=1&transparent=1&ui_theme=dark"></iframe></div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-sky-400 mb-3">Proyektor</h3>
-                            <p class="text-slate-400 leading-relaxed">Proyektor adalah perangkat output yang berfungsi untuk menampilkan gambar atau video ke permukaan besar seperti layar atau dinding, sering digunakan dalam presentasi atau hiburan.</p>
-                        </div>
+                        <div id="leaderboard-loading" class="text-center p-8">Memuat data peringkat...</div>
                     </div>
                 </div>
 
-                <!-- Sub Menu 1.4: Software -->
-                <div id="sub-1-4" class="content-panel">
-                    <h2 class="text-3xl font-bold text-white mb-6">Software</h2>
-                    <div class="content-embed rounded-xl overflow-hidden shadow-2xl shadow-slate-900/80">
-                        <iframe src="https://www.youtube.com/embed/2LZbbEtrqoo?si=edp_jv1uYkPGA7Ph" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <!-- Sub Menu 1.5: Brainware -->
-                <div id="sub-1-5" class="content-panel">
-                    <h2 class="text-3xl font-bold text-white mb-6">Brainware</h2>
-                    <div class="content-embed rounded-xl overflow-hidden shadow-2xl shadow-slate-900/80">
-                        <iframe src="https://www.youtube.com/embed/Kqv5V1vpfHw?si=9WnoIchuVKgafIf0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                </div>
-
+                <!-- Game Panel -->
+                <div id="game" class="content-panel"><h2 class="text-3xl font-bold text-white mb-6">Game Edukatif</h2><div class="content-embed rounded-xl overflow-hidden" style="padding-top: 82.88%;"><iframe src="https://scratch.mit.edu/projects/1185431027/embed" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe></div></div>
             </div>
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Feather Icons
             feather.replace();
+
+            // --- Google Apps Script URL ---
+            // GANTI DENGAN URL ANDA YANG DIDAPAT DARI LANGKAH 3
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyML_RbVv-14znalekUEcowNf0m_DYvlmCDc7_1LFAM1z_nkesxPjVpiG6qGJhqZwhbjA/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
             const contentPanels = document.querySelectorAll('.content-panel');
-            const homePanel = document.getElementById('home');
             const startLearningBtn = document.getElementById('start-learning-btn');
-            
-            // Function to switch content panels
-            function switchPanel(targetId) {
-                // Hide all panels
-                contentPanels.forEach(panel => {
-                    panel.classList.remove('active');
-                });
-
-                // Deactivate all links
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-
-                // Find and show the target panel
-                const targetPanel = document.getElementById(targetId);
-                if (targetPanel) {
-                    targetPanel.classList.add('active');
-                }
-
-                // Find and activate the corresponding link(s)
-                const activeLinks = document.querySelectorAll(`.nav-link[data-target="${targetId}"]`);
-                activeLinks.forEach(link => {
-                    link.classList.add('active');
-                    
-                    // Open parent menus if they exist
-                    let parent = link.closest('ul')?.parentElement.closest('ul');
-                    while(parent) {
-                        const parentLink = parent.previousElementSibling;
-                        if(parentLink && parentLink.classList.contains('nav-link')) {
-                           parentLink.classList.add('active');
-                        }
-                        parent = parent.parentElement.closest('ul');
-                    }
-                });
-            }
-
-            // Set the initial state (show home panel)
-            homePanel.classList.add('active');
-
-            // Add click event listeners to all nav links
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.dataset.target;
-                    switchPanel(targetId);
-                    
-                    // On mobile, close sidebar after clicking a link
-                    if (window.innerWidth < 768) {
-                        sidebar.classList.add('-translate-x-full');
-                    }
-                });
-            });
-
-            // "Mulai Belajar" button functionality
-            startLearningBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Switch to the first lesson
-                switchPanel('sub-1-1');
-            });
-
-            // --- Mobile Sidebar Logic ---
             const sidebar = document.getElementById('sidebar');
             const openBtn = document.getElementById('open-sidebar-btn');
             const closeBtn = document.getElementById('close-sidebar-btn');
 
-            if (openBtn && sidebar) {
-                openBtn.addEventListener('click', () => {
-                    sidebar.classList.remove('-translate-x-full');
+            function switchPanel(targetId) {
+                contentPanels.forEach(p => p.classList.remove('active'));
+                navLinks.forEach(l => l.classList.remove('active'));
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) targetPanel.classList.add('active');
+                if (targetId === 'peringkat') loadLeaderboard();
+                document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
+            }
+
+            switchPanel('home');
+            navLinks.forEach(link => link.addEventListener('click', e => {
+                e.preventDefault();
+                switchPanel(link.dataset.target);
+                if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
+            }));
+            startLearningBtn.addEventListener('click', e => { e.preventDefault(); switchPanel('sub-1-1'); });
+            if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+            if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+
+            // --- Quiz Logic ---
+            const quizQuestions = [
+                { question: "Perangkat keras yang berfungsi sebagai 'otak' komputer adalah...", answers: [{ text: "RAM", correct: false }, { text: "CPU", correct: true }, { text: "GPU", correct: false }, { text: "Monitor", correct: false }] },
+                { question: "Berikut ini yang termasuk perangkat input adalah...", answers: [{ text: "Printer", correct: false }, { text: "Speaker", correct: false }, { text: "Keyboard", correct: true }, { text: "Proyektor", correct: false }] },
+                { question: "Sistem Operasi seperti Windows atau macOS termasuk dalam kategori...", answers: [{ text: "Hardware", correct: false }, { text: "Brainware", correct: false }, { text: "Software", correct: true }, { text: "Malware", correct: false }] },
+                { question: "Perangkat yang digunakan untuk menampilkan output visual dari komputer disebut...", answers: [{ text: "Mouse", correct: false }, { text: "Monitor", correct: true }, { text: "CPU", correct: false }, { text: "Motherboard", correct: false }] },
+                { question: "Pengguna atau operator komputer sering disebut sebagai...", answers: [{ text: "Software", correct: false }, { text: "Hardware", correct: false }, { text: "Brainware", correct: true }, { text: "Firmware", correct: false }] },
+                { question: "Apa kepanjangan dari RAM?", answers: [{ text: "Random Access Memory", correct: true }, { text: "Read Only Memory", correct: false }, { text: "Realtime Application Memory", correct: false }, { text: "Run And Maintain", correct: false }] },
+                { question: "Perangkat untuk mencetak dokumen ke kertas adalah...", answers: [{ text: "Scanner", correct: false }, { text: "Monitor", correct: false }, { text: "Printer", correct: true }, { text: "Speaker", correct: false }] },
+                { question: "Seorang programmer yang membuat aplikasi adalah contoh dari...", answers: [{ text: "Software", correct: false }, { text: "Brainware", correct: true }, { text: "Hardware", correct: false }, { text: "Systemware", correct: false }] },
+                { question: "Manakah di bawah ini yang BUKAN merupakan sistem operasi?", answers: [{ text: "Linux", correct: false }, { text: "Android", correct: false }, { text: "Microsoft Office", correct: true }, { text: "iOS", correct: false }] },
+                { question: "Papan sirkuit utama yang menghubungkan semua komponen komputer disebut...", answers: [{ text: "CPU", correct: false }, { text: "Hard Disk", correct: false }, { text: "Power Supply", correct: false }, { text: "Motherboard", correct: true }] }
+            ];
+
+            const loginForm = document.getElementById('login-form');
+            const quizLoginScreen = document.getElementById('quiz-login');
+            const quizQuestionScreen = document.getElementById('quiz-question-screen');
+            const quizResultsScreen = document.getElementById('quiz-results');
+            const questionCounterEl = document.getElementById('question-counter');
+            const timerEl = document.getElementById('timer');
+            const questionTextEl = document.getElementById('question-text');
+            const answerButtonsEl = document.getElementById('answer-buttons');
+            const nextBtn = document.getElementById('next-btn');
+            const scoreTextEl = document.getElementById('score-text');
+            const restartQuizBtn = document.getElementById('restart-quiz-btn');
+            const savingStatusEl = document.getElementById('saving-status');
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            const leaderboardLoading = document.getElementById('leaderboard-loading');
+
+            let currentQuestionIndex, score, timerInterval, userData;
+            const TIME_LIMIT = 120;
+
+            loginForm.addEventListener('submit', handleLogin);
+            nextBtn.addEventListener('click', () => { currentQuestionIndex++; (currentQuestionIndex < quizQuestions.length) ? showQuestion() : showScore(); });
+            restartQuizBtn.addEventListener('click', () => {
+                quizResultsScreen.classList.add('hidden');
+                quizLoginScreen.classList.remove('hidden');
+            });
+
+            function handleLogin(e) {
+                e.preventDefault();
+                const nama = document.getElementById('nama').value;
+                const kelas = document.getElementById('kelas').value;
+                const token = document.getElementById('token').value;
+                const loginError = document.getElementById('login-error');
+
+                if (token !== '1234') {
+                    loginError.textContent = 'Token yang Anda masukan salah!';
+                    loginError.classList.remove('hidden');
+                    return;
+                }
+                loginError.classList.add('hidden');
+                userData = { nama, kelas };
+                startQuiz();
+            }
+
+            function startQuiz() {
+                currentQuestionIndex = 0;
+                score = 0;
+                quizLoginScreen.classList.add('hidden');
+                quizResultsScreen.classList.add('hidden');
+                quizQuestionScreen.classList.remove('hidden');
+                showQuestion();
+            }
+
+            function showQuestion() {
+                resetState();
+                let currentQuestion = quizQuestions[currentQuestionIndex];
+                questionCounterEl.innerText = `Soal ${currentQuestionIndex + 1} / ${quizQuestions.length}`;
+                questionTextEl.innerText = currentQuestion.question;
+
+                currentQuestion.answers.forEach(answer => {
+                    const button = document.createElement('button');
+                    button.innerHTML = answer.text;
+                    button.classList.add('btn-answer', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border', 'border-slate-600', 'bg-slate-700', 'hover:bg-sky-600');
+                    if (answer.correct) button.dataset.correct = true;
+                    button.addEventListener('click', selectAnswer);
+                    answerButtonsEl.appendChild(button);
                 });
+                startTimer();
+            }
+
+            function startTimer() {
+                let timeLeft = TIME_LIMIT;
+                timerEl.textContent = formatTime(timeLeft);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerEl.textContent = formatTime(timeLeft);
+                    if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeUp(); }
+                }, 1000);
+            }
+
+            function formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+
+            function handleTimeUp() {
+                Array.from(answerButtonsEl.children).forEach(button => {
+                    button.disabled = true;
+                    if (button.dataset.correct) button.classList.add('correct');
+                });
+                nextBtn.classList.remove('hidden');
+            }
+
+            function resetState() {
+                clearInterval(timerInterval);
+                nextBtn.classList.add('hidden');
+                while (answerButtonsEl.firstChild) answerButtonsEl.removeChild(answerButtonsEl.firstChild);
+            }
+
+            function selectAnswer(e) {
+                clearInterval(timerInterval);
+                const selectedBtn = e.target;
+                if (selectedBtn.dataset.correct) { score++; selectedBtn.classList.add('correct'); } 
+                else { selectedBtn.classList.add('incorrect'); }
+                
+                Array.from(answerButtonsEl.children).forEach(button => {
+                    if (button.dataset.correct) button.classList.add('correct');
+                    button.disabled = true;
+                });
+                nextBtn.classList.remove('hidden');
             }
             
-            if (closeBtn && sidebar) {
-                closeBtn.addEventListener('click', () => {
-                    sidebar.classList.add('-translate-x-full');
-                });
+            async function showScore() {
+                quizQuestionScreen.classList.add('hidden');
+                quizResultsScreen.classList.remove('hidden');
+                scoreTextEl.innerText = `Skor Anda: ${score} dari ${quizQuestions.length} soal benar.`;
+                savingStatusEl.textContent = 'Menyimpan skor...';
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ ...userData, skor: score }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    savingStatusEl.textContent = result.success ? 'Skor berhasil disimpan!' : 'Gagal menyimpan skor.';
+                } catch (error) {
+                    savingStatusEl.textContent = 'Terjadi kesalahan saat menyimpan skor.';
+                }
+            }
+
+            async function loadLeaderboard() {
+                leaderboardBody.innerHTML = '';
+                leaderboardLoading.textContent = 'Memuat data peringkat...';
+                leaderboardLoading.style.display = 'block';
+                
+                try {
+                    const response = await fetch(SCRIPT_URL);
+                    const result = await response.json();
+                    if (result.success) {
+                        leaderboardLoading.style.display = 'none';
+                        result.data.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+                            tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                            tr.innerHTML = `
+                                <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                                <td class="px-6 py-4">${row.nama}</td>
+                                <td class="px-6 py-4">${row.kelas}</td>
+                                <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                            `;
+                            leaderboardBody.appendChild(tr);
+                        });
+                    } else {
+                        leaderboardLoading.textContent = 'Gagal memuat data.';
+                    }
+                } catch (error) {
+                    leaderboardLoading.textContent = 'Terjadi kesalahan saat memuat data.';
+                }
             }
         });
     </script>
