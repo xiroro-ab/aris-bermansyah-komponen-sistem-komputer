@@ -52,7 +52,7 @@
                     <hr class="border-slate-700 my-4">
                     <h2 class="text-sm font-semibold text-sky-400 uppercase tracking-wider mb-3">Modul Pembelajaran</h2>
                     <ul class="space-y-1">
-                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-1"><i data-feather="play-circle" class="w-5 h-5"></i><span>Cara Kerja Komputer</span></a></li>
+                        <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-1"><i data-feather="play-circle" class="w-5 h-5"></i><span>Ilustrasi Cara Kerja</span></a></li>
                         <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-2"><i data-feather="layers" class="w-5 h-5"></i><span>Sistem Komputer</span></a></li>
                         <li>
                             <a href="#" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg" data-target="sub-1-3"><i data-feather="hard-drive" class="w-5 h-5"></i><span>Hardware</span></a>
@@ -92,7 +92,9 @@
                 <!-- Home Panel -->
                 <div id="home" class="content-panel">
                     <div class="text-center py-10 md:py-20">
-                        <img src="https://raw.githubusercontent.com/xiroro-ab/aris-bermansyah-komponen-sistem-komputer/refs/heads/main/IMG_7135.jpg" alt="Foto Profil Aris Bermansyah" class="w-36 h-36 rounded-full mx-auto border-4 border-sky-500 shadow-lg">
+                        <img src="https://raw.githubusercontent.com/xiroro-ab/aris-bermansyah-komponen-sistem-komputer/main/aris.png" alt="Foto Profil Aris Bermansyah" class="w-36 h-36 rounded-full mx-auto border-4 border-sky-500 shadow-lg">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mt-6">Aris Bermansyah, S.Kom</h2>
+                        <h1 class="text-2xl md:text-3xl font-semibold text-slate-300 mt-4 mb-4">Selamat Datang di Portal Pembelajaran Interaktif</h1>
                         <p class="text-lg text-slate-400 max-w-3xl mx-auto">Mari pelajari materi komponen sistem komputer melalui modul interaktif, kuis, dan permainan yang menyenangkan!</p>
                         <div class="mt-8">
                             <a href="#" id="start-learning-btn" class="bg-sky-500 text-white font-semibold px-8 py-3 rounded-lg hover:bg-sky-600 transition-all">Mulai Belajar Sekarang</a>
@@ -281,42 +283,12 @@
     </div>
 
     <script>
-        // Fungsi ini harus berada di scope global agar bisa dipanggil oleh JSONP
-        function handleLeaderboardData(result) {
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            const leaderboardLoading = document.getElementById('leaderboard-loading');
-            try {
-                if (result.success) {
-                    leaderboardLoading.style.display = 'none';
-                    if (result.data.length === 0) {
-                        leaderboardLoading.textContent = 'Belum ada data peringkat.';
-                        leaderboardLoading.style.display = 'block';
-                        return;
-                    }
-                    result.data.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-                        tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
-                        tr.innerHTML = `
-                            <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
-                            <td class="px-6 py-4">${row.nama}</td>
-                            <td class="px-6 py-4">${row.kelas}</td>
-                            <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
-                        `;
-                        leaderboardBody.appendChild(tr);
-                    });
-                } else {
-                    leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
-                }
-            } catch (e) {
-                leaderboardLoading.textContent = 'Terjadi kesalahan saat memproses data.';
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
 
             // --- Google Apps Script URL ---
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgDJTGWxTJfBB6lheo4hLdYtt9nf5ik81P_iWPYvzMQ947tnIKQt_nK4zhOu7oMQcL/exec';
+            // GANTI DENGAN URL APPS SCRIPT BARU ANDA
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyM73rfp3ismsW3pxYFuopJGjxow1Qsq7yU2csIysabpMJdpnyBiOrDAIXO-ir3BgoHiw/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -477,7 +449,7 @@
                 savingStatusEl.textContent = 'Menyimpan skor...';
                 
                 try {
-                    const response = await fetch(SCRIPT_URL, {
+                    await fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors', 
                         body: JSON.stringify({ ...userData, skor: score }),
@@ -489,24 +461,43 @@
                 }
             }
 
-            function loadLeaderboard() {
+            async function loadLeaderboard() {
                 leaderboardBody.innerHTML = '';
                 leaderboardLoading.textContent = 'Memuat data peringkat...';
                 leaderboardLoading.style.display = 'block';
-                
-                // Hapus script lama jika ada, untuk mencegah duplikasi
-                const oldScript = document.getElementById('jsonp-script');
-                if (oldScript) {
-                    oldScript.remove();
-                }
 
-                const script = document.createElement('script');
-                script.id = 'jsonp-script';
-                script.src = SCRIPT_URL; // URL sudah berisi callback yang tetap
-                script.onerror = () => {
+                try {
+                    const response = await fetch(SCRIPT_URL);
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                    }
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        leaderboardLoading.style.display = 'none';
+                        if (result.data.length === 0) {
+                            leaderboardLoading.textContent = 'Belum ada data peringkat.';
+                            leaderboardLoading.style.display = 'block';
+                            return;
+                        }
+                        result.data.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+                            tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                            tr.innerHTML = `
+                                <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                                <td class="px-6 py-4">${row.nama}</td>
+                                <td class="px-6 py-4">${row.kelas}</td>
+                                <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                            `;
+                            leaderboardBody.appendChild(tr);
+                        });
+                    } else {
+                        leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
+                    }
+                } catch (error) {
+                    console.error('Error fetching leaderboard:', error);
                     leaderboardLoading.textContent = 'Gagal menghubungi server. Periksa kembali URL Apps Script dan status deployment.';
-                };
-                document.body.appendChild(script);
+                }
             }
         });
     </script>
