@@ -92,7 +92,8 @@
                 <!-- Home Panel -->
                 <div id="home" class="content-panel">
                     <div class="text-center py-10 md:py-20">
-                        <img src="https://raw.githubusercontent.com/xiroro-ab/aris-bermansyah-komponen-sistem-komputer/refs/heads/main/IMG_7135.jpg" alt="Foto Profil Aris Bermansyah" class="w-36 h-36 rounded-full mx-auto border-4 border-sky-500 shadow-lg">
+                        <img src="https://raw.githubusercontent.com/xiroro-ab/aris-bermansyah-komponen-sistem-komputer/main/aris.png" alt="Foto Profil Aris Bermansyah" class="w-36 h-36 rounded-full mx-auto border-4 border-sky-500 shadow-lg">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mt-6">Aris Bermansyah, S.Kom</h2>
                         <h1 class="text-2xl md:text-3xl font-semibold text-slate-300 mt-4 mb-4">Selamat Datang di Portal Pembelajaran Interaktif</h1>
                         <p class="text-lg text-slate-400 max-w-3xl mx-auto">Mari pelajari materi komponen sistem komputer melalui modul interaktif, kuis, dan permainan yang menyenangkan!</p>
                         <div class="mt-8">
@@ -282,11 +283,42 @@
     </div>
 
     <script>
+        // Fungsi ini harus berada di scope global agar bisa dipanggil oleh JSONP
+        function handleLeaderboardData(result) {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            const leaderboardLoading = document.getElementById('leaderboard-loading');
+            try {
+                if (result.success) {
+                    leaderboardLoading.style.display = 'none';
+                    if (result.data.length === 0) {
+                        leaderboardLoading.textContent = 'Belum ada data peringkat.';
+                        leaderboardLoading.style.display = 'block';
+                        return;
+                    }
+                    result.data.forEach((row, index) => {
+                        const tr = document.createElement('tr');
+                        tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
+                        tr.innerHTML = `
+                            <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
+                            <td class="px-6 py-4">${row.nama}</td>
+                            <td class="px-6 py-4">${row.kelas}</td>
+                            <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
+                        `;
+                        leaderboardBody.appendChild(tr);
+                    });
+                } else {
+                    leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
+                }
+            } catch (e) {
+                leaderboardLoading.textContent = 'Terjadi kesalahan saat memproses data.';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
 
             // --- Google Apps Script URL ---
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxxzvVfrgXK9XxbtkpT9yqxclqXOXyEUqe_4E-gMtnWWn-gFPKH5cxbdvW_q4cqZf1bA/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgDJTGWxTJfBB6lheo4hLdYtt9nf5ik81P_iWPYvzMQ947tnIKQt_nK4zhOu7oMQcL/exec';
 
             // --- Navigation Logic ---
             const navLinks = document.querySelectorAll('.nav-link');
@@ -447,10 +479,9 @@
                 savingStatusEl.textContent = 'Menyimpan skor...';
                 
                 try {
-                    // Menggunakan fetch untuk POST masih bisa jalan karena header sudah di-handle di script
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'no-cors', // Mode no-cors untuk POST sederhana
+                        mode: 'no-cors', 
                         body: JSON.stringify({ ...userData, skor: score }),
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -460,51 +491,22 @@
                 }
             }
 
-            // FUNGSI BARU MENGGUNAKAN JSONP
             function loadLeaderboard() {
                 leaderboardBody.innerHTML = '';
                 leaderboardLoading.textContent = 'Memuat data peringkat...';
                 leaderboardLoading.style.display = 'block';
-
-                const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
                 
-                window[callbackName] = function(result) {
-                    try {
-                        if (result.success) {
-                            leaderboardLoading.style.display = 'none';
-                            if (result.data.length === 0) {
-                                leaderboardLoading.textContent = 'Belum ada data peringkat.';
-                                leaderboardLoading.style.display = 'block';
-                                return;
-                            }
-                            result.data.forEach((row, index) => {
-                                const tr = document.createElement('tr');
-                                tr.classList.add('bg-slate-800', 'border-b', 'border-slate-700');
-                                tr.innerHTML = `
-                                    <td class="px-6 py-4 font-medium text-white">${index + 1}</td>
-                                    <td class="px-6 py-4">${row.nama}</td>
-                                    <td class="px-6 py-4">${row.kelas}</td>
-                                    <td class="px-6 py-4 font-bold text-sky-400">${row.skor}</td>
-                                `;
-                                leaderboardBody.appendChild(tr);
-                            });
-                        } else {
-                            leaderboardLoading.textContent = 'Gagal memuat data: ' + result.message;
-                        }
-                    } catch (e) {
-                        leaderboardLoading.textContent = 'Terjadi kesalahan saat memproses data.';
-                    } finally {
-                        // Clean up
-                        document.body.removeChild(script);
-                        delete window[callbackName];
-                    }
-                };
+                // Hapus script lama jika ada, untuk mencegah duplikasi
+                const oldScript = document.getElementById('jsonp-script');
+                if (oldScript) {
+                    oldScript.remove();
+                }
 
                 const script = document.createElement('script');
-                script.src = `${SCRIPT_URL}?callback=${callbackName}`;
+                script.id = 'jsonp-script';
+                script.src = SCRIPT_URL; // URL sudah berisi callback yang tetap
                 script.onerror = () => {
                     leaderboardLoading.textContent = 'Gagal menghubungi server. Periksa kembali URL Apps Script dan status deployment.';
-                    delete window[callbackName];
                 };
                 document.body.appendChild(script);
             }
